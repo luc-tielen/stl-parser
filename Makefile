@@ -6,7 +6,7 @@ clean:
 	stack clean
 
 run:
-	stack exec stl-parser
+	stack exec stl-parser -- test.stl
 
 .PHONY: build clean run
 

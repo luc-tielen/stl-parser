@@ -3,12 +3,14 @@
 
 module Main where
 
+import System.Environment (getArgs)
 import Text.Megaparsec hiding (parse)
 import qualified Text.Megaparsec (parse)
 import Text.Megaparsec.Char.Lexer as L hiding (space, lexeme)
 import qualified Text.Megaparsec.Char.Lexer as L (space, lexeme)
 import Text.Megaparsec.Char (spaceChar, string, alphaNumChar)
 import Control.Applicative (empty)
+import Control.Monad (when)
 import Data.Void
 
 
@@ -97,11 +99,14 @@ keyword s = lexeme $ string s >> return ()
 
 main :: IO ()
 main = do
-  contents <- readFile "test.stl"
-  case parse parseSolid contents of
-    Left err -> do
-      putStrLn "Failed to parse STL file:"
-      putStrLn $ parseErrorPretty err
-    Right solid -> do
-      putStrLn "Parsed STL file:"
-      putStrLn $ show solid
+  args <- getArgs
+  when (length args >= 1) $ do
+    let (stlFile:_) = args
+    contents <- readFile stlFile
+    case parse parseSolid contents of
+        Left err -> do
+          putStrLn "Failed to parse STL file:"
+          putStrLn $ parseErrorPretty err
+        Right solid -> do
+          putStrLn "Parsed STL file:"
+          putStrLn $ show solid
